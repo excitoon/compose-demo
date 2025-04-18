@@ -5,15 +5,28 @@ services:
       dockerfile: Dockerfile.base
     pull_policy: build
 
+  dependency:
+    image: base
+    entrypoint: "sleep 10"
+    stop_grace_period: 1s
+    healthcheck:
+      test: ["CMD", "sleep", "1"]
+    depends_on:
+    - base
+
   app:
     build: .
     pull_policy: build
     depends_on:
-    - base
+      base:
+        condition: service_started
+      dependency:
+        condition: service_healthy
 
   test:
     build:
       dockerfile: Dockerfile.test
     pull_policy: build
+    stop_grace_period: 1s
     depends_on:
-    - base
+    - app
