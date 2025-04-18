@@ -1,0 +1,19 @@
+services:
+  base:
+    image: base
+    build:
+      dockerfile: Dockerfile.base
+    pull_policy: build
+
+  app:
+    build: .
+    pull_policy: build
+    depends_on:
+    - base
+
+  test:
+    build:
+      dockerfile: Dockerfile.test
+    pull_policy: build
+    depends_on:
+    - base
